@@ -26,12 +26,11 @@ jobs:
       run: |
         python -m pip install --upgrade pip
         pip install flit
-    - name: Build package
+    - name: Build and publish
+      working-directory: ./caloutils/
       run: |
-        cd caloutils
         flit build
-    - name: Publish package
-      run: flit publish
+        flit publish
       env:
         FLIT_PASSWORD: ${{ secrets.PYPI_API_TOKEN }}
         FLIT_USERNAME: __token__
