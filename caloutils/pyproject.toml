@@ -1,35 +1,64 @@
+[project]
+name = "caloutils"
+version = "0.0.1"
+authors = [
+  { name="mova", email="mova@users.noreply.github.com" },
+  { name="kaechb", email="kaechb@users.noreply.github.com" },
+]
+description = "Metrics and tools for evaluation generative models for calorimeter shower based on pytorch_geometric."
+requires-python = ">=3.8"
+readme="README.rst"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+dependencies = [
+    "torch_geometric>=2.3.0",
+    "torch-scatter>=2.1.1",
+    "torch>=2.0.0",
+]
+[project.optional-dependencies]
+test = [
+    "pytest >=2.7.3",
+    "pytest-cov",
+]
+doc = ["sphinx"]
+
+
+[project.urls]
+"Homepage" = "https://github.com/DeGeSim/caloutils"
+"Bug Tracker" = "https://github.com/DeGeSim/caloutils/issues"
+
+# [project.scripts]
+# flit = "flit:main"
+
+
+
 [build-system]
-build-backend = "setuptools.build_meta"
+build-backend = "flit_core.buildapi"
 requires = [
-  "setuptools",
-  "pip==19.2.3",
-  "bump2version==0.5.11",
-  "wheel==0.33.6",
-  "watchdog==0.9.0",
-  "flake8==3.7.8",
-  "tox==3.14.0",
-  "coverage==4.5.4",
-  "Sphinx==1.8.5",
-  "twine==1.14.0",
+  "flit_core >=3.2,<4",
+  "ruff>=0.0.280",
   "black==21.7b0",
 ]
 
-[bdist_wheel]
+[tool.bdist_wheel]
 universal = 1
 
 
-[tool.bumpversion]
-current_version = 0.1.0
-commit = True
-tag = True
+# [tool.bumpversion]
+# current_version = 0.1.0
+# commit = True
+# tag = True
 
-[tool.bumpversion:file:setup.py]
-search = version='{current_version}'
-replace = version='{new_version}'
+# [tool.bumpversion:file:setup.py]
+# search = version='{current_version}'
+# replace = version='{new_version}'
 
-[tool.bumpversion:file:caloutils/__init__.py]
-search = __version__ = '{current_version}'
-replace = __version__ = '{new_version}'
+# [tool.bumpversion:file:caloutils/__init__.py]
+# search = __version__ = '{current_version}'
+# replace = __version__ = '{new_version}'
 
 
 
@@ -77,7 +106,7 @@ include = '.*\.pyi?$'
 line-length = 84
 target-version = ['py310']
 
-[mypy]
+[tool.mypy]
 check_untyped_defs = true
 disallow_any_generics = true
 disallow_untyped_defs = true
