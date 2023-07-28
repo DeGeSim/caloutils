@@ -3,36 +3,26 @@ from math import prod
 import torch
 from torch_scatter import scatter_add
 
-from fgsim.config import conf, device
-from fgsim.io.batch_tools import fix_slice_dict_nodeattr
-from fgsim.utils.batch import ptr_from_batchidx
 
-from .objcol import scaler
 
-num_z = 45
-num_alpha = 16
-num_r = 9
-dims = [num_z, num_alpha, num_r]
+# from .objcol import scaler
 
-cell_idxs = torch.arange(prod(dims)).reshape(*dims)
-full_event_cell_idx = (
-    torch.arange(conf.loader.batch_size * dims[0] * dims[1] * dims[2])
-    .reshape(conf.loader.batch_size, *dims)
-    .to(device)
-)
+# num_z = 45
+# num_alpha = 16
+# num_r = 9
+# dims = [num_z, num_alpha, num_r]
+
+# cell_idxs = torch.arange(prod(dims)).reshape(*dims)
+# full_event_cell_idx = (
+#     torch.arange(conf.loader.batch_size * dims[0] * dims[1] * dims[2])
+#     .reshape(conf.loader.batch_size, *dims)
+#     .to(device)
+# )
 
 
 def voxelize(batch):
     batch_size = int(batch.batch[-1] + 1)
     x = batch.x
-
-    # Get the valid hits
-    # valid_hits = temp[~mask]
-    # Ehit = valid_hits[:, 0]
-    # valid_coordinates = valid_hits[:, 1:].long().t()
-    # shower_index = torch.arange(batch_size).repeat_interleave(
-    #     (~mask).float().sum(1).reshape(-1).int()
-    # )
     shower_index = batch.batch
     Ehit = x.T[0]
     valid_coordinates = x.T[1:].int()
@@ -87,7 +77,7 @@ def cell_occ_per_hit(batch):
     return batch_occ
 
 
-def sum_dublicate_hits(batch, forbid_dublicates=False):
+def sum_duplicate_hits(batch, fake=True):
     old_dev = batch.x.device
     batch = batch.to("cpu")
     dev = batch.x.device
@@ -118,12 +108,12 @@ def sum_dublicate_hits(batch, forbid_dublicates=False):
     _, invidx, counts = torch.unique_consecutive(
         cell_idx_per_hit, return_inverse=True, return_counts=True
     )
-    if forbid_dublicates:
+    if not fake:
         assert (counts - 1 == 0).all()
 
     hitE_new = scatter_add(hitE, invidx)
     sel_new_idx = counts.cumsum(-1) - 1
-    if forbid_dublicates:
+    if not fake:
         assert (sel_new_idx == torch.arange(len(batch.x))).all()
 
     batchidx_new = batchidx[sel_new_idx]
@@ -131,7 +121,7 @@ def sum_dublicate_hits(batch, forbid_dublicates=False):
 
     # count the cells, that have been hit multiple times
     n_multihit = scatter_add(counts - 1, batchidx_new)
-    if forbid_dublicates:
+    if not fake:
         assert (n_multihit == 0).all()
     new_counts = torch.unique_consecutive(batchidx_new, return_counts=True)[1]
 
@@ -149,7 +139,7 @@ def sum_dublicate_hits(batch, forbid_dublicates=False):
     #     scatter_add(pos_new * hitE_new.unsqueeze(-1), batchidx_new, -2),
     #     scatter_add(pos * hitE.unsqueeze(-1), batchidx, -2),
     # )
-    if forbid_dublicates:
+    if not fake:
         assert (n_multihit == 0).all()
         assert (batch.batch == batchidx_new).all()
         assert (batch.n_pointsv == new_counts).all()
@@ -180,7 +170,7 @@ def _scatter_sort(x, index, dim=-1):
     return x, x_perm.take_along_dim(index_perm, dim=dim)
 
 
-def test_sum_dublicate_hits():
+def test_sum_duplicate_hits():
     from torch_geometric.data import Batch, Data
 
     batch = Batch.from_data_list(
@@ -210,7 +200,7 @@ def test_sum_dublicate_hits():
             ),
         ]
     )
-    batch_new = sum_dublicate_hits(batch.clone())
+    batch_new = sum_duplicate_hits(batch.clone())
 
     batchidx = batch.batch
     batchidx_new = batch_new.batch
@@ -236,4 +226,4 @@ def test_sum_dublicate_hits():
     )
 
 
-test_sum_dublicate_hits()
+# test_sum_duplicate_hits()

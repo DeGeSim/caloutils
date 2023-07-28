@@ -2,8 +2,6 @@ import torch
 from torch_geometric.data import Batch
 from torch_geometric.nn.pool import global_mean_pool
 
-from fgsim.models.pool.std_pool import global_std_pool
-
 
 def fpc_from_batch(batch: Batch) -> dict[str, torch.Tensor]:
     """Get the first principal component from a PC"""

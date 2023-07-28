@@ -1,6 +1,6 @@
 from typing import List, Union
 
-import queueflow as qf
+import queueflow as qf__dist_fration
 from torch.multiprocessing import Queue, Value
 from torch_geometric.data import Batch, Data
 
