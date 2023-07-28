@@ -39,28 +39,12 @@ doc = ["sphinx"]
 build-backend = "flit_core.buildapi"
 requires = [
   "flit_core >=3.2,<4",
-  "ruff>=0.0.280",
-  "black==21.7b0",
+  "bump2version",
+  "black",
+  "pre-commit",
+  "ruff",
+  "pytest",
 ]
-
-[tool.bdist_wheel]
-universal = 1
-
-
-# [tool.bumpversion]
-# current_version = 0.1.0
-# commit = True
-# tag = True
-
-# [tool.bumpversion:file:setup.py]
-# search = version='{current_version}'
-# replace = version='{new_version}'
-
-# [tool.bumpversion:file:caloutils/__init__.py]
-# search = __version__ = '{current_version}'
-# replace = __version__ = '{new_version}'
-
-
 
 
 [tool.pytest.ini_options]
@@ -151,6 +135,3 @@ target-version = "py310"
 
 [tool.ruff.per-file-ignores]
 "__init__.py" = ["E402","F401"]
-
-
-

@@ -2,8 +2,6 @@
 set -xe
 python -m venv venv
 source venv/bin/activate
-pip install --upgrade pip flit ruff black mypy pytest pre-commit
-pre-commit install
 
 if [[ ${HOSTNAME} == max-*desy.de ]]; then
     source ${MODULESHOME}/init/bash
@@ -11,3 +9,4 @@ if [[ ${HOSTNAME} == max-*desy.de ]]; then
 fi
 
 flit install --symlink
+pre-commit install
