@@ -32,13 +32,13 @@ You can either clone the public repository:
 
 .. code-block:: console
 
-    $ git clone git://github.com/mova/caloutils
+    $ git clone git://github.com/DeGeSim/caloutils
 
 Or download the `tarball`_:
 
 .. code-block:: console
 
-    $ curl -OJL https://github.com/mova/caloutils/tarball/master
+    $ curl -OJL https://github.com/DeGeSim/caloutils/tarball/master
 
 Once you have a copy of the source, you can install it with:
 
@@ -47,5 +47,5 @@ Once you have a copy of the source, you can install it with:
     $ python setup.py install
 
 
-.. _Github repo: https://github.com/mova/caloutils
-.. _tarball: https://github.com/mova/caloutils/tarball/master
+.. _Github repo: https://github.com/DeGeSim/caloutils
+.. _tarball: https://github.com/DeGeSim/caloutils/tarball/master

@@ -6,8 +6,8 @@ caloutils
 .. image:: https://img.shields.io/pypi/v/caloutils.svg
         :target: https://pypi.python.org/pypi/caloutils
 
-.. image:: https://img.shields.io/travis/mova/caloutils.svg
-        :target: https://travis-ci.com/mova/caloutils
+.. image:: https://img.shields.io/travis/DeGeSim/caloutils.svg
+        :target: https://travis-ci.com/DeGeSim/caloutils
 
 .. image:: https://readthedocs.org/projects/caloutils/badge/?version=latest
         :target: https://caloutils.readthedocs.io/en/latest/?version=latest
