@@ -19,9 +19,13 @@ dependencies = [
     "torch-scatter>=2.1.1",
 ]
 [project.optional-dependencies]
-test = [
-    "pytest >=2.7.3",
-    "pytest-cov",
+dev = [
+  "pytest >=2.7.3",
+  "pytest-cov",
+  "bump2version",
+  "black",
+  "pre-commit",
+  "ruff",
 ]
 doc = ["sphinx"]
 
@@ -39,11 +43,6 @@ doc = ["sphinx"]
 build-backend = "flit_core.buildapi"
 requires = [
   "flit_core >=3.2,<4",
-  "bump2version",
-  "black",
-  "pre-commit",
-  "ruff",
-  "pytest",
 ]
 
 
