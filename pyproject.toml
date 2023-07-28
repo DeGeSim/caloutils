@@ -1,6 +1,6 @@
 [project]
 name = "caloutils"
-version = "0.0.1"
+version = '0.0.2'
 authors = [
   { name="mova", email="mova@users.noreply.github.com" },
   { name="kaechb", email="kaechb@users.noreply.github.com" },
