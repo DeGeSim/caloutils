@@ -1,4 +1,5 @@
 import torch
+from fgsim.config import conf
 from torch_geometric.data import Batch
 from torch_geometric.nn.pool import (
     global_add_pool,
@@ -6,8 +7,6 @@ from torch_geometric.nn.pool import (
     global_mean_pool,
 )
 from torch_scatter import scatter_std
-
-from fgsim.config import conf
 
 n_layers = 45
 

@@ -1,7 +1,6 @@
 import torch
-from torch_geometric.data import Batch
-
 from fgsim.config import conf
+from torch_geometric.data import Batch
 
 from .convcoord import batch_to_Exyz
 from .pca import fpc_from_batch

@@ -1,10 +1,9 @@
 from typing import List, Union
 
 import queueflow as qf
+from fgsim.config import conf
 from torch.multiprocessing import Queue, Value
 from torch_geometric.data import Batch, Data
-
-from fgsim.config import conf
 
 from .objcol import contruct_graph_from_row, read_chunks, scaler
 

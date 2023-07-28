@@ -1,7 +1,6 @@
 from typing import Dict, Optional, Union
 
 import numpy as np
-
 from fgsim.config import conf
 
 labels_dict: Dict[str, str] = {

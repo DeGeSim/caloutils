@@ -1,10 +1,9 @@
 # %%
 import numpy as np
 import torch
+from fgsim.config import compute_conf, conf
 from torch_geometric.data import Batch
 from tqdm import tqdm
-
-from fgsim.config import compute_conf, conf
 
 compute_conf(conf, {"dataset_name": "calochallange", "command": "test"})
 step = 1_000

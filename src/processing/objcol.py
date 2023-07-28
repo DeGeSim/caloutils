@@ -4,6 +4,9 @@ from typing import List, Tuple
 import h5py
 import numpy as np
 import torch
+from fgsim.config import conf
+from fgsim.io import FileManager, ScalerBase
+from fgsim.io.dequantscaler import dequant_stdscale
 from sklearn.pipeline import make_pipeline
 from sklearn.preprocessing import (
     FunctionTransformer,
@@ -12,10 +15,6 @@ from sklearn.preprocessing import (
     StandardScaler,
 )
 from torch_geometric.data import Data
-
-from fgsim.config import conf
-from fgsim.io import FileManager, ScalerBase
-from fgsim.io.dequantscaler import dequant_stdscale
 
 
 def path_to_len(fn: Path) -> int:

@@ -3,13 +3,12 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import numpy as np
 import seaborn as sns
+from fgsim.plot.binborders import binborders_wo_outliers, chip_to_binborders
+from fgsim.utils.torchtonp import wrap_torch_to_np
 from matplotlib.axes import Axes
 from matplotlib.colors import LogNorm, Normalize
 from matplotlib.figure import Figure
 from mpl_toolkits.axes_grid1 import make_axes_locatable
-
-from fgsim.plot.binborders import binborders_wo_outliers, chip_to_binborders
-from fgsim.utils.torchtonp import wrap_torch_to_np
 
 np.set_printoptions(formatter={"float_kind": "{:.3g}".format})
 

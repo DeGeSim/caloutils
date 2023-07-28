@@ -1,11 +1,10 @@
 from math import prod
 
 import torch
-from torch_scatter import scatter_add
-
 from fgsim.config import conf, device
 from fgsim.io.batch_tools import fix_slice_dict_nodeattr
 from fgsim.utils.batch import ptr_from_batchidx
+from torch_scatter import scatter_add
 
 from .objcol import scaler
 

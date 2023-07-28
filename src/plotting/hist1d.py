@@ -1,9 +1,8 @@
 from typing import Dict
 
-from matplotlib.figure import Figure
-
 from fgsim.config import conf
 from fgsim.plot.infolut import var_to_label
+from matplotlib.figure import Figure
 
 from .ratioplot import ratioplot
 

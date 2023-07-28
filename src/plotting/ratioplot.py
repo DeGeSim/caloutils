@@ -3,10 +3,9 @@ from typing import Optional
 import matplotlib.pyplot as plt
 import mplhep
 import numpy as np
+from fgsim.utils.torchtonp import wrap_torch_to_np
 from matplotlib.axes import Axes
 from matplotlib.figure import Figure
-
-from fgsim.utils.torchtonp import wrap_torch_to_np
 
 from .binborders import binborders_wo_outliers, bincenters
 

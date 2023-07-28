@@ -1,5 +1,4 @@
 import numpy as np
-
 from fgsim.utils.torchtonp import wrap_torch_to_np
 
 

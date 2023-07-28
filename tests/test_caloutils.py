@@ -5,8 +5,6 @@
 
 import unittest
 
-from caloutils import caloutils
-
 
 class TestCaloutils(unittest.TestCase):
     """Tests for `caloutils` package."""

@@ -1,8 +1,7 @@
 import torch
-from torch_scatter import scatter_mean
-
 from fgsim.config import conf
 from fgsim.utils import check_tensor
+from torch_scatter import scatter_mean
 
 from .objcol import scaler
 
