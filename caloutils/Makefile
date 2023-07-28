@@ -32,7 +32,6 @@ release: clean test build
 
 
 install: build
-	source $$MODULESHOME/init/bash; module load maxwell gcc/9.3
 	flit install
 
 venv: venv
