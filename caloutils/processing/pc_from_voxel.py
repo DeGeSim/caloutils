@@ -2,7 +2,7 @@ import torch
 from torch import Tensor
 from torch_geometric.data import Batch
 
-from ..calorimeter import calorimeter
+from .. import calorimeter
 
 
 def convert_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
@@ -17,7 +17,6 @@ def convert_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
     voxel : Tensor
         A 4D tensor representing multiple particle showers in voxelized format.
         Dimensions are (num_showers, num_z, num_alpha, num_r).
-
     Einc : Tensor
         A 1D tensor representing containing the incoming energy of each shower .
         Dimensions are (num_showers,).
@@ -37,7 +36,6 @@ def convert_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
     ------
     AssertionError
         If there are NaN values in the point cloud tensor x.
-
     """
     E, showers = Einc.clone(), voxel.clone()
     showers = showers.reshape(

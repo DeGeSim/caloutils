@@ -3,7 +3,7 @@ from torch import Tensor
 from torch_geometric.data import Batch
 from torch_geometric.nn.pool import global_max_pool
 
-from ..caloutils import calorimeter
+from .. import calorimeter
 
 
 def analyze_layers(batch: Batch) -> dict[str, Tensor]:

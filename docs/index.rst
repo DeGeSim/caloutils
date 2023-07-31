@@ -2,7 +2,7 @@ Welcome to caloutils's documentation!
 ======================================
 
 .. toctree::
-   :maxdepth: 2
+   :maxdepth: 3
    :caption: Contents:
 
    readme
@@ -19,7 +19,6 @@ Welcome to caloutils's documentation!
    processing
    variables
    utils
-   classifiers
 
 
 .. Indices and tables

@@ -4,7 +4,7 @@ import torch
 from torch_geometric.data import Batch
 from torch_scatter import scatter_add
 
-from ..calorimeter import calorimeter
+from .. import calorimeter
 
 dims = calorimeter.dims
 

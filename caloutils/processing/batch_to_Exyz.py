@@ -1,7 +1,7 @@
 import torch
 from torch_geometric.data import Batch
 
-from ..calorimeter import calorimeter
+from .. import calorimeter
 
 
 def batch_to_Exyz(batch: Batch) -> Batch:

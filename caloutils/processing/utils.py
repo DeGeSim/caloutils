@@ -8,7 +8,7 @@ from torch_geometric.data import Batch
 from torch_geometric.nn import pool
 from torch_scatter import scatter_add
 
-from ..calorimeter import calorimeter
+from .. import calorimeter
 
 
 def _scatter_sort(x: Tensor, index: Tensor, dim=-1):

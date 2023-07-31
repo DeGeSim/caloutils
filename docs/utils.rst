@@ -1,7 +1,7 @@
 =======
-Processing
+Utils
 =======
-.. automodule:: caloutils.processing
+.. automodule:: caloutils.utils
   :members:
   :imported-members:
   :autosummary:

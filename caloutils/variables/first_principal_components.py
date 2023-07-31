@@ -1,6 +1,8 @@
 import torch
 from torch_geometric.data import Batch
-from torch_geometric.nn import global_mean_pool, global_std_pool
+from torch_geometric.nn import global_mean_pool
+
+from ..processing.utils import global_std_pool
 
 
 def first_principal_components(batch: Batch) -> dict[str, torch.Tensor]:
