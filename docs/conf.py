@@ -37,6 +37,7 @@ extensions = [
     "sphinx.ext.viewcode",
     "sphinx.ext.autosummary",
     "autodocsumm",
+    "sphinx_search.extension",
 ]
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary

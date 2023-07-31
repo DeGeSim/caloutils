@@ -29,7 +29,7 @@ dev = [
   "pre-commit",
   "ruff",
 ]
-doc = ["sphinx","sphinx_rtd_theme","autodocsumm"]
+doc = ["sphinx","sphinx_rtd_theme","autodocsumm","readthedocs-sphinx-search"]
 
 
 [project.urls]
