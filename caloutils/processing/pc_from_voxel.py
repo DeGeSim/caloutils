@@ -6,9 +6,7 @@ from .. import calorimeter
 
 
 def convert_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
-    """
-    Converts a 3D voxel tensor representation of a particle shower into a hit cloud (pc).
-
+    """Converts a 3D voxel tensor representation of a particle shower into a hit cloud (pc).
     The conversion is done by finding all non-zero elements in the voxel tensor,
     storing their values and their coordinates in 3D space, and grouping them by shower.
 
@@ -18,20 +16,21 @@ def convert_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
         A 4D tensor representing multiple particle showers in voxelized format.
         Dimensions are (num_showers, num_z, num_alpha, num_r).
     Einc : Tensor
-        A 1D tensor representing containing the incoming energy of each shower .
+        A 1D tensor representing containing the incoming energy of each shower.
         Dimensions are (num_showers,).
 
     Returns
     -------
-    Batch
+    batch: Batch
         A Batch object from the PyTorch Geometric library that contains the point cloud
         representation of the showers, where:
-            - batch.batch is a 1D tensor where each element is the ID of the shower the corresponding
-            point in the point cloud belongs to.
-            - batch.x is a 3D tensor where each row represents a hit in the point cloud,
-            with the columns being the value of the voxel and its 3D coordinates (r, alpha, z).
-            - batch.y is a 2D tensor where each row represents the incoming energy of the shower
-            and the number of non-zero voxels (hits) in it.
+        - batch.batch is a 1D tensor where each element is the ID of the shower the corresponding
+        point in the point cloud belongs to.
+        - batch.x is a 3D tensor where each row represents a hit in the point cloud,
+        with the columns being the value of the voxel and its 3D coordinates (r, alpha, z).
+        - batch.y is a 2D tensor where each row represents the incoming energy of the shower
+        and the number of non-zero voxels (hits) in it.
+
     Raises
     ------
     AssertionError

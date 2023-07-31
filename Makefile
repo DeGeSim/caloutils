@@ -1,40 +1,34 @@
-clean:
-	rm -fr build/
-	rm -fr dist/
-	rm -fr .eggs/
-	find . -name '*.egg-info' -exec rm -fr {} +
-	find . -name '*.egg' -exec rm -f {} +
-	find . -name '*.pyc' -exec rm -f {} +
-	find . -name '*.pyo' -exec rm -f {} +
-	find . -name '*~' -exec rm -f {} +
-	find . -name '__pycache__' -exec rm -fr {} +
-	rm -fr .tox/
-	rm -f .coverage
-	rm -fr htmlcov/
-	rm -fr .pytest_cache
+.PHONY: clean test docs build release_local release_remote install build_venv
 
-test: ## run tests quickly with the default Python
+clean:
+	rm -rf build/ dist/ .eggs/
+	find . -name '__pycache__' -exec rm -r {} +
+	rm -rf .coverage htmlcov
+
+test:
 	pytest
 
-docs: ## generate Sphinx HTML documentation, including API docs
-	rm -f docs/caloutils.rst
-	rm -f docs/modules.rst
-	sphinx-apidoc -o docs/ caloutils
+docs:
 	$(MAKE) -C docs clean
 	$(MAKE) -C docs html
-	$(BROWSER) docs/_build/html/index.html
 
 build: clean
 	flit build
 
-release: clean test build
+release_local: clean test build
 	flit publish
 
 
-install: build
-	flit install
+release_remote:
+	bump2version patch
+	git push --tags
 
-venv: venv
+install:
+	# flit install --editable
+	pip install --no-deps -e .
+
+
+build_venv:
 	python -m venv venv
 	source venv/bin/activate; pip install --upgrade pip flit ruff black mypy pytest pre-commit
 	source venv/bin/activate; pre-commit install

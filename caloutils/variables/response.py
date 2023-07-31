@@ -6,9 +6,9 @@ from torch_geometric.nn import global_add_pool
 def response(batch: Batch) -> torch.Tensor:
     """
     Computes the energy response for each event in a batch.
-
     The energy response is calculated as the ratio of the total detected energy
     (sum of energy from all hits in an event) to the true energy of the event.
+
     Parameters
     ----------
     batch : Batch
