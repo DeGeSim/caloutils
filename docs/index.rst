@@ -7,14 +7,23 @@ Welcome to caloutils's documentation!
 
    readme
    installation
-   usage
-   modules
    contributing
    authors
    history
 
-Indices and tables
-==================
-* :ref:`genindex`
-* :ref:`modindex`
-* :ref:`search`
+.. toctree::
+   :maxdepth: 2
+   :name: Modules
+   :caption: Modules
+
+   processing
+   variables
+   utils
+   classifiers
+
+
+.. Indices and tables
+.. ==================
+.. * :ref:`genindex`
+.. * :ref:`modindex`
+.. * :ref:`search`
