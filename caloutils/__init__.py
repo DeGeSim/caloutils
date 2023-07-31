@@ -2,7 +2,7 @@
 
 __author__ = """mova"""
 __email__ = "mova@users.noreply.github.com"
-__version__ = '0.0.8'  # fmt: skip
+__version__ = '0.0.9'  # fmt: skip
 
 # from processing.batch_to_Exyz import batch_to_Exyz
 # from processing.pca import fpc_from_batch
