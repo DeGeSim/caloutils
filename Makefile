@@ -21,6 +21,7 @@ release_local: clean test build
 
 release_remote:
 	bump2version patch
+	git push
 	git push --tags
 
 install:
