@@ -1,11 +1,25 @@
 import torch
-from fgsim.models.pool.std_pool import global_std_pool
 from torch_geometric.data import Batch
-from torch_geometric.nn.pool import global_mean_pool
+from torch_geometric.nn import global_mean_pool, global_std_pool
 
 
-def fpc_from_batch(batch: Batch) -> dict[str, torch.Tensor]:
-    """Get the first principal component from a PC"""
+def first_principal_components(batch: Batch) -> dict[str, torch.Tensor]:
+    """
+    Calculates the first principal component (PC) from a point cloud (PC).
+
+    Parameters
+    ----------
+    batch : Batch
+        A Batch object from the PyTorch Geometric library that contains the point cloud
+        representation of the events. Batch.xyz contains the 3D coordinates of hits.
+        Batch.batch contains the indices that map which hit belongs to which event.
+
+    Returns
+    -------
+    fpc : dict
+        Dictionary containing the components of the first principal component and the corresponding
+        eigenvalue for each event. The keys of the dictionary are 'x', 'y', 'z', and 'eval'.
+    """
     batchidx = batch.batch
     xyz = batch.xyz.double()
     means = global_mean_pool(xyz, batchidx)
