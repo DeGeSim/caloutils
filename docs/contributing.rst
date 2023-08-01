@@ -66,9 +66,8 @@ Ready to contribute? Here's how to set up `caloutils` for local development.
 
 3. Install your local copy into a virtualenv. Assuming you have virtualenvwrapper installed, this is how you set up your fork for local development::
 
-    $ mkvirtualenv caloutils
-    $ cd caloutils/
-    $ python setup.py develop
+    $ make build_venv
+    $ make install
 
 4. Create a branch for local development::
 
@@ -77,13 +76,10 @@ Ready to contribute? Here's how to set up `caloutils` for local development.
    Now you can make your changes locally.
 
 5. When you're done making changes, check that your changes pass flake8 and the
-   tests, including testing other Python versions with tox::
+   tests::
 
-    $ flake8 caloutils tests
-    $ python setup.py test or pytest
-    $ tox
+    $ make test
 
-   To get flake8 and tox, just pip install them into your virtualenv.
 
 6. Commit your changes and push your branch to GitHub::
 
@@ -102,17 +98,8 @@ Before you submit a pull request, check that it meets these guidelines:
 2. If the pull request adds functionality, the docs should be updated. Put
    your new functionality into a function with a docstring, and add the
    feature to the list in README.rst.
-3. The pull request should work for Python >= 3.10. Check
-   https://travis-ci.com/DeGeSim/caloutils/pull_requests
-   and make sure that the tests pass for all supported Python versions.
+3. The pull request should work for Python >= 3.10.
 
-Tips
-----
-
-To run a subset of tests::
-
-
-    $ python -m unittest tests.test_caloutils
 
 Deploying
 ---------
@@ -125,4 +112,6 @@ $ bump2version patch # possible: major / minor / patch
 $ git push
 $ git push --tags
 
-Travis will then deploy to PyPI if tests pass.
+or::
+
+    $ make release_remote

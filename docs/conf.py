@@ -51,9 +51,9 @@ extensions = [
 
 autosummary_generate = True  # Turn on sphinx.ext.autosummary
 autosummary_generate_overwrite = True
-autodoc_default_options = {
-    "autosummary": True,
-}
+# autodoc_default_options = {
+#     "autosummary": True,
+# }
 
 
 # Add any paths that contain templates here, relative to this directory.
@@ -66,7 +66,7 @@ templates_path = ["_templates"]
 source_suffix = ".rst"
 
 # The master toctree document.
-master_doc = "index"
+master_doc = "contents"
 
 # General information about the project.
 project = "caloutils"

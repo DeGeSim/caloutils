@@ -1,13 +1,12 @@
-=========
-caloutils
-=========
-
+=====================
+Welcome to caloutils!
+=====================
 
 .. image:: https://img.shields.io/pypi/v/caloutils.svg
         :target: https://pypi.python.org/pypi/caloutils
 
-.. image:: https://img.shields.io/travis/DeGeSim/caloutils.svg
-        :target: https://travis-ci.com/DeGeSim/caloutils
+.. .. image:: https://img.shields.io/travis/DeGeSim/caloutils.svg
+..         :target: https://travis-ci.com/DeGeSim/caloutils
 
 .. image:: https://readthedocs.org/projects/caloutils/badge/?version=latest
         :target: https://caloutils.readthedocs.io/en/latest/?version=latest
@@ -17,18 +16,21 @@ Metrics and tools for evaluation of generative models for calorimeter showers ba
 
 * Free software: MIT license
 * Documentation: https://caloutils.readthedocs.io.
-
+* Github: https://github.com/DeGeSim/caloutils
+* PyPi: https://pypi.org/project/caloutils
 
 Summary
 =======
 
 ``caloutils`` is a Python package built to simplify and streamline the handling, processing, and analysis of 4D point cloud data derived from calorimeter showers in high-energy physics experiments. The package includes a set of sophisticated tools to perform voxelization, energy response calculations, geometric feature extraction, and more. ``caloutils`` aims to simplify the complex analysis pipeline for calorimeter shower data, enabling researchers to efficiently extract meaningful insights. As this tool is based on Point Clouds, the provided metrics should apply to any calorimeter.
 
+
 Description
 ===========
 
 4D Point Clouds
 ---------------
+
 
 The 4D point cloud data handled by ``caloutils`` consists of three spatial coordinates and a fourth dimension representing the energy deposited at each point in the calorimeter. This multidimensional dataset captures a comprehensive view of particle showers, serving as a valuable resource in experimental physics.
 
@@ -52,14 +54,16 @@ Key Features
 Installation
 ============
 
-You can easily install ``caloutils`` via pip::
+You can easily install ``caloutils`` via pip:
+.. code-block:: console
 
-   pip install caloutils
+   $ pip install caloutils
 
 Usage
 =====
 
-First, the used calorimeter geometry needs to be selected::
+First, the used calorimeter geometry needs to be selected:
+.. code-block:: python
 
    from caloutils.calorimeter import Calorimeter
    Calorimeter.set_layout_calochallange_ds2()
@@ -69,7 +73,7 @@ For now only dataset 2 and 3 of the `Calochallenge<https://github.com/CaloChalle
 1. Convert Voxelized Data to Point Cloud
 ----------------------------------------
 
-::
+.. code-block:: python
 
    import caloutils
    # Convert the point cloud data into a voxel representation.
@@ -80,7 +84,9 @@ For now only dataset 2 and 3 of the `Calochallenge<https://github.com/CaloChalle
 2. Data Transformation
 ----------------------
 
-Transform the cylindrical coordinates to Cartesian coordinates and add pseudorapidity and azimuthal angle::
+Transform the cylindrical coordinates to Cartesian coordinates and add pseudorapidity and azimuthal angle:
+
+.. code-block:: python
 
    batch_transformed = caloutils.batch_to_Exyz(batch)
 
@@ -88,7 +94,8 @@ These examples are meant to be illustrative and provide a quick understanding of
 
 
 3. Calculate High Level Variables
--------------------------------
+---------------------------------
+.. code-block:: python
 
    # Calculate the energy response of a batch of showers.
    energy_response = caloutils.variables.energy_response(batch)
@@ -97,13 +104,3 @@ These examples are meant to be illustrative and provide a quick understanding of
    # Or, all at once, stored as attributes of the batch:
    batch=caloutils.variables.calc_vars(batch)
    print(batch.cyratio.mean())
-
-
-
-Credits
--------
-
-This package was created with Cookiecutter_ and the `audreyr/cookiecutter-pypackage`_ project template.
-
-.. _Cookiecutter: https://github.com/audreyr/cookiecutter
-.. _`audreyr/cookiecutter-pypackage`: https://github.com/audreyr/cookiecutter-pypackage
