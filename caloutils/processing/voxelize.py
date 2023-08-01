@@ -6,8 +6,6 @@ from torch_scatter import scatter_add
 
 from .. import calorimeter
 
-dims = calorimeter.dims
-
 
 def voxelize(batch: Batch) -> torch.Tensor:
     """
@@ -25,6 +23,7 @@ def voxelize(batch: Batch) -> torch.Tensor:
         A tensor of shape (batch_size, num_z, num_alpha, num_r), where each element
         represents the energy in the corresponding voxel.
     """
+    dims = calorimeter.dims
     batch_size = int(batch.batch[-1] + 1)
     x = batch.x
     shower_index = batch.batch

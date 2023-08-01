@@ -10,7 +10,7 @@ from .response import response
 
 def calc_vars(
     batch: Batch,
-    fake: bool = False,
+    sum_multihits: bool = False,
     vars: list = [
         "voxel",
         "sphereratio",
@@ -31,8 +31,8 @@ def calc_vars(
     batch : Batch
         A Batch object from the PyTorch Geometric library that contains the point cloud
         representation of the events.
-    fake : bool, optional
-        If True, sums up the energy of duplicate hits in an event. Defaults to False.
+    sum_multihits : bool, optional
+        If True, aggregates the energies of hits in the same cell for each event. Defaults to False.
     vars : list of str, optional
         List of variables to calculate for the events in the batch. Defaults to all
         supported variables: ["voxel","sphereratio","cyratio","fpc","showershape","response"].
@@ -42,7 +42,7 @@ def calc_vars(
     Batch
         The input Batch object with calculated variables added.
     """
-    if fake:
+    if sum_multihits:
         batch = sum_duplicate_hits(batch)
     batch = batch_to_Exyz(batch)
     if "sphereratio" in vars:
