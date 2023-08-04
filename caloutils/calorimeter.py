@@ -1,4 +1,7 @@
+from math import prod
 from typing import Optional
+
+import torch
 
 
 class Calorimeter:
@@ -19,22 +22,26 @@ class Calorimeter:
             )
 
     @property
-    def num_r(self):
+    def cell_idxs(self) -> torch.Tensor:
+        return torch.arange(prod(self.dims)).reshape(*(self.dims))
+
+    @property
+    def num_r(self) -> int:
         self._assert_calo_init()
         return self._num_r
 
     @property
-    def alppha(self):
+    def num_alpha(self) -> int:
         self._assert_calo_init()
         return self._num_alpha
 
     @property
-    def z(self):
+    def num_z(self) -> int:
         self._assert_calo_init()
         return self._num_z
 
     @property
-    def dims(self):
+    def dims(self) -> tuple[int, int, int]:
         self._assert_calo_init()
         return self._dims
 

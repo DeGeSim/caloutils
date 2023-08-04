@@ -5,7 +5,7 @@ from torch_geometric.data import Batch
 from .. import calorimeter
 
 
-def convert_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
+def voxel_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
     """Converts a 3D voxel tensor representation of a particle shower into a hit cloud (pc).
     The conversion is done by finding all non-zero elements in the voxel tensor,
     storing their values and their coordinates in 3D space, and grouping them by shower.
@@ -13,7 +13,7 @@ def convert_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
     Parameters
     ----------
     voxel : Tensor
-        A 4D tensor representing multiple particle showers in voxelized format.
+        A 4D tensor representing multiple particle showers in pc_to_voxeld format.
         Dimensions are (num_showers, num_z, num_alpha, num_r).
     Einc : Tensor
         A 1D tensor representing containing the incoming energy of each shower.

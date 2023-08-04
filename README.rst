@@ -77,7 +77,7 @@ For now only dataset 2 and 3 of the `Calochallenge<https://github.com/CaloChalle
 
    import caloutils
    # Convert the point cloud data into a voxel representation.
-   batch = caloutils.processing.convert_to_pc(shower, energies)
+   batch = caloutils.processing.voxel_to_pc(shower, energies)
 
 ``batch`` is an instance of a PyTorch Geometric ``Batch`` object, storing the point cloud data
 

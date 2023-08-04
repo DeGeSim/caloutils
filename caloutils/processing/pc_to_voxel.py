@@ -5,9 +5,10 @@ from torch_geometric.data import Batch
 from torch_scatter import scatter_add
 
 from .. import calorimeter
+from .utils import _construct_global_cellevent_idx
 
 
-def voxelize(batch: Batch) -> torch.Tensor:
+def pc_to_voxel(batch: Batch) -> torch.Tensor:
     """
     Converts a pytorch geometric batch of point clouds into a torch batch of 3D voxel grids.
 
@@ -31,11 +32,7 @@ def voxelize(batch: Batch) -> torch.Tensor:
     valid_coordinates = x.T[1:].int()
     indices = torch.cat((shower_index.unsqueeze(1), valid_coordinates.t()), dim=1)
 
-    full_event_cell_idx = (
-        torch.arange(batch_size * dims[0] * dims[1] * dims[2])
-        .reshape(batch_size, *dims)
-        .to(x.device)
-    )
+    full_event_cell_idx = _construct_global_cellevent_idx(batch_size).to(x.device)
     scatter_index = full_event_cell_idx[
         indices[..., 0], indices[..., 1], indices[..., 2], indices[..., 3]
     ]

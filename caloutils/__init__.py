@@ -16,7 +16,7 @@ def init_calorimeter(caloname: str):
     ----------
     caloname : str
         The parameter `caloname` is a string that represents the name of the calorimeter. It can have two
-    possible values: "ccds2" or "ccds3".
+    possible values: "cc_ds2" or "cc_ds3".
 
     """
     match caloname:
