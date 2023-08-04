@@ -2,21 +2,21 @@
 name = "caloutils"
 version = '0.0.10'
 authors = [
-  { name="mova", email="mova@users.noreply.github.com" },
-  { name="kaechb", email="kaechb@users.noreply.github.com" },
+  { name = "mova", email = "mova@users.noreply.github.com" },
+  { name = "kaechb", email = "kaechb@users.noreply.github.com" },
 ]
 description = "Metrics and tools for evaluation generative models for calorimeter shower based on pytorch_geometric."
 requires-python = ">=3.8"
-readme="README.rst"
+readme = "README.rst"
 classifiers = [
-    "Programming Language :: Python :: 3",
-    "License :: OSI Approved :: MIT License",
-    "Operating System :: OS Independent",
+  "Programming Language :: Python :: 3",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
 ]
 dependencies = [
-    "torch>=2.0.0",
-    "torch_geometric>=2.3.0",
-    "torch-scatter>=2.1.1",
+  "torch>=2.0.0",
+  "torch_geometric>=2.3.0",
+  "torch-scatter>=2.1.1",
 ]
 
 
@@ -29,7 +29,7 @@ dev = [
   "pre-commit",
   "ruff",
 ]
-doc = ["sphinx","sphinx_rtd_theme","autodocsumm","readthedocs-sphinx-search"]
+doc = ["sphinx", "sphinx_rtd_theme", "autodocsumm", "readthedocs-sphinx-search"]
 
 
 [project.urls]
@@ -40,27 +40,17 @@ doc = ["sphinx","sphinx_rtd_theme","autodocsumm","readthedocs-sphinx-search"]
 # flit = "flit:main"
 
 
-
 [build-system]
 build-backend = "flit_core.buildapi"
-requires = [
-  "flit_core >=3.2,<4",
-]
+requires = ["flit_core >=3.2,<4"]
 
 
 [tool.pytest.ini_options]
 python_files = "*.py"
-testpaths = [
-  "tests",
-]
+testpaths = ["tests"]
 #--ignore=E203,E302
 [tool.flake8]
-exclude = [
-  "fgsim/old/*",
-  ".tox",
-  "docs",
-  "__pycache__",
-]
+exclude = ["fgsim/old/*", ".tox", "docs", "__pycache__"]
 ignore = "E203,E302,W503,F541,"
 max-line-length = 84
 per-file-ignores = """
@@ -108,32 +98,32 @@ warn_unused_ignores = true
 [tool.ruff]
 line-length = 85
 exclude = [
-    "fgsim/old/*",
-    ".tox",
-    "docs",
-    "__pycache__",
-    ".bzr",
-    ".direnv",
-    ".eggs",
-    ".git",
-    ".hg",
-    ".mypy_cache",
-    ".nox",
-    ".pants.d",
-    ".ruff_cache",
-    ".svn",
-    ".tox",
-    ".venv",
-    "__pypackages__",
-    "_build",
-    "buck-out",
-    "build",
-    "dist",
-    "node_modules",
-    "venv",
+  "fgsim/old/*",
+  ".tox",
+  "docs",
+  "__pycache__",
+  ".bzr",
+  ".direnv",
+  ".eggs",
+  ".git",
+  ".hg",
+  ".mypy_cache",
+  ".nox",
+  ".pants.d",
+  ".ruff_cache",
+  ".svn",
+  ".tox",
+  ".venv",
+  "__pypackages__",
+  "_build",
+  "buck-out",
+  "build",
+  "dist",
+  "node_modules",
+  "venv",
 ]
 ignore = ["E501"]
 target-version = "py310"
 
 [tool.ruff.per-file-ignores]
-"__init__.py" = ["E402","F401"]
+"__init__.py" = ["E402", "F401"]
