@@ -26,17 +26,17 @@ class Calorimeter:
     @property
     def alppha(self):
         self._assert_calo_init()
-        return self._num_r
+        return self._num_alpha
 
     @property
     def z(self):
         self._assert_calo_init()
-        return self._num_r
+        return self._num_z
 
     @property
     def dims(self):
         self._assert_calo_init()
-        return self._num_r
+        return self._dims
 
     def set_layout_calochallange_ds2(self):
         self._num_z, self._num_alpha, self._num_r = self._ds2
