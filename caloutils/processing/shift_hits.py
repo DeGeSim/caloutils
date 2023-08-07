@@ -13,16 +13,13 @@ _testing_no_random_shift = False
 def _shift_multihits_to_neighbor_cells(
     batch: Batch,
     globalidx: Optional[torch.Tensor] = None,
-    eventshift: Optional[torch.Tensor] = None,
     return_globalidx: bool = False,
 ):
     batchidx: torch.Tensor = batch.batch
     dev = batch.x.device
 
     if globalidx is None:
-        globalidx: torch.Tensor
-        eventshift: torch.Tensor
-        globalidx, eventshift = calorimeter.globalidx_from_pos(
+        globalidx: torch.Tensor = calorimeter.globalidx_from_pos(
             batch.x[:, 1:].long(), batchidx
         )
 
@@ -30,15 +27,27 @@ def _shift_multihits_to_neighbor_cells(
     globalidx, index_perm = scatter_sort(globalidx, batchidx)
     batch.x = batch.x[index_perm]
 
-    # pos: torch.Tensor = batch.x[:, 1:].long()
-    # hitE: torch.Tensor = batch.x[:, 0].long()
+    # The idea of this algorithm is to look for repetitions
+    # in the (sorted) globalidx to detect repetitions.
 
-    _, unique_cells_idx, counts = torch.unique(
+    global_uniques, unique_cells_idx, counts = torch.unique(
         globalidx, return_inverse=True, return_counts=True
     )
 
+    # Because we want to keep the highest energy hit in the same
+    # cell we now sort the hits in the same cell by the energy
+    # For this, we need to know which hits share a cell
+    has_multihits = torch.isin(globalidx, global_uniques[counts > 1])
+    # Here we want to sort energies of the same cell/event,
+    # so we use the globalidx instead of the usual batchidx
+    _, perm = scatter_sort(
+        batch.x[..., 0][has_multihits], globalidx[has_multihits], descending=True
+    )
+    batch.x[has_multihits] = batch.x[has_multihits][perm]
+    globalidx[has_multihits] = globalidx[has_multihits][perm]
+    assert (batchidx[has_multihits] == batchidx[has_multihits][perm]).all()
+
     # select the second hit in each cell for moving around
-    # TODO change to lowest eneergy hit
     mhit_idxs = (
         torch.cat([torch.tensor([0]).to(dev), 1 - unique_cells_idx.diff()])
         .nonzero()
@@ -60,16 +69,16 @@ def _shift_multihits_to_neighbor_cells(
         batchidx_to_shift = batchidx[mhit_idxs]
         new_x = _shift_pos(batch.x[mhit_idxs], shift_state)
 
-        # sort by highest energy, to prioritize shifting
-        # the 2nd highest energy out of the cell
-        _, perm = scatter_sort(new_x.T[0], batchidx_to_shift, descending=True)
-        new_x = new_x[perm]
-        mhit_idxs = mhit_idxs[perm]
+        # # sort by highest energy, to prioritize shifting
+        # # the 2nd highest energy out of the cell
+        # _, perm = scatter_sort(new_x.T[0], batchidx_to_shift, descending=True)
+        # new_x = new_x[perm]
+        # mhit_idxs = mhit_idxs[perm]
 
         # get the new globals index for the shifted hits
-        new_global = (
-            calorimeter.pos_to_cellidx(new_x[:, 1:]) + eventshift[batchidx_to_shift]
-        )
+        new_global = calorimeter.globalidx_from_pos(
+            new_x[:, 1:], batchidx_to_shift
+        )[0]
 
         # Check if the shift is valid
         # A) Check if this is the first hit to be shifted to this cell

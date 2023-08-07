@@ -33,9 +33,7 @@ def scatter_sort(x: Tensor, index: Tensor, dim: int = -1, descending: bool = Fal
     """
     x, x_perm = torch.sort(x, dim=dim, descending=descending)
     index = index.take_along_dim(x_perm, dim=dim)
-    index, index_perm = torch.sort(
-        index, dim=dim, stable=True, descending=descending
-    )
+    index, index_perm = torch.sort(index, dim=dim, stable=True)
     x = x.take_along_dim(index_perm, dim=dim)
     return x, x_perm.take_along_dim(index_perm, dim=dim)
 

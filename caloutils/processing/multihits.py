@@ -35,15 +35,13 @@ def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=False):
     # batch = batch.to("cpu")
     batchidx = batch.batch
     assert (batchidx.diff() >= 0).all()
-    globalidx, eventshift = calorimeter.globalidx_from_pos(
-        batch.x[:, 1:].long(), batchidx
-    )
+    globalidx = calorimeter.globalidx_from_pos(batch.x[:, 1:].long(), batchidx)
 
     if shiftmultihit:
         # get new positions and global index
         # and the current index of these events
         batch, globalidx = _shift_multihits_to_neighbor_cells(
-            batch, globalidx.clone(), eventshift.clone(), return_globalidx=True
+            batch, globalidx.clone(), return_globalidx=True
         )
 
     batch = _add_hits(batch, globalidx, forbid_dublicates)
