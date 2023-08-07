@@ -1,7 +1,10 @@
 import torch
 from torch_scatter import scatter_add
 
-from caloutils.processing import sum_multi_hits
+import caloutils
+from caloutils.processing import multihits
+
+caloutils.init_calorimeter("test")
 
 
 def test_sum_multi_hits():
@@ -21,16 +24,12 @@ def test_sum_multi_hits():
             Data(
                 x=torch.tensor(
                     [
-                        [1, 0, 0, 0],
-                        [1, 0, 0, 0],
-                        [1, 0, 0, 0],
-                        [1, 0, 0, 0],
+                        [1, 1, 0, 0],
+                        [2, 0, 0, 0],
+                        [1, 0, 1, 0],
+                        [1, 1, 0, 0],
                         [1, 1, 1, 0],
                         [1, 1, 1, 0],
-                        # [1, 1, 0, 0],
-                        # [1, 1, 0, 0],
-                        # [1, 0, 0, 0],
-                        # [1, num_z - 1, num_alpha - 1, num_r - 1],
                     ]
                 ),
                 y=torch.tensor([[1, 1]]),
@@ -38,7 +37,19 @@ def test_sum_multi_hits():
             ),
         ]
     )
-    batch_new = sum_multi_hits(batch.clone())
+    batch_new = multihits.sum_multi_hits(batch.clone())
+    assert (
+        batch_new.x
+        == torch.tensor(
+            [
+                [1, 0, 0, 0],
+                [2, 0, 0, 0],
+                [1, 0, 1, 0],
+                [2, 1, 0, 0],
+                [2, 1, 1, 0],
+            ]
+        )
+    ).all()
 
     batchidx = batch.batch
     batchidx_new = batch_new.batch
