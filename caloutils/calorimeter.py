@@ -43,10 +43,45 @@ class Calorimeter:
         self._assert_calo_init()
         return self._dims
 
-    def pos_to_cellidx(self, pos: torch.Tensor):
+    def pos_to_cellidx(self, pos: torch.Tensor) -> torch.Tensor:
+        """Map the position of a point to index unique for every cell:
+
+        Parameters
+        ----------
+        pos : Tensor
+            The position matrix of the points with shape `[n_points,n_dims]`.
+
+        """
         assert pos.shape[-1] == len(self.dims)
         dev = pos.device
         return self.cell_idxs.to(dev)[pos[..., 0], pos[..., 1], pos[..., 2]]
+
+    def globalidx_from_pos(
+        self, pos, batchidx
+    ) -> tuple[torch.Tensor, torch.Tensor]:
+        """Map the position of a point to index unique for every cell and every event:
+
+        Parameters
+        ----------
+        pos : Tensor
+            The position matrix of the points with shape `[n_points,n_dims]`.
+        batchidx : Tensor
+            The tensor indicating the event number of each point with shape `[n_points]`.
+
+        """
+        num_z, num_alpha, num_r = self.dims
+        pos_z, pos_alpha, pos_r = pos.T
+        assert (pos >= 0).all()
+        assert (pos_z < num_z).all()
+        assert (pos_alpha < num_alpha).all()
+        assert (pos_r < num_r).all()
+        n_events = int(batchidx[-1] + 1)
+        # create and index that indexes each cell for each event
+        globalidx = self.pos_to_cellidx(pos)
+        # add the shiftvector to diffentiate for each event
+        eventshift = torch.arange(n_events).to(pos.device) * prod(calorimeter.dims)
+        globalidx = globalidx + eventshift[batchidx]
+        return globalidx, eventshift
 
     def init_calorimeter(self, caloname: str):
         """The function `init_calorimeter` initializes a calorimeter geometry.
