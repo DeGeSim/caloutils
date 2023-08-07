@@ -54,6 +54,7 @@ class Calorimeter:
         """
         assert pos.shape[-1] == len(self.dims)
         dev = pos.device
+        pos = pos.long()
         return self.cell_idxs.to(dev)[pos[..., 0], pos[..., 1], pos[..., 2]]
 
     def globalidx_from_pos(
