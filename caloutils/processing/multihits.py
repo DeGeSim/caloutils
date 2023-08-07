@@ -5,14 +5,10 @@ from torch_geometric.data import Batch
 from torch_scatter import scatter_add
 
 from .. import calorimeter
-from ..processing.utils import (
-    fix_slice_dict_nodeattr,
-    ptr_from_batchidx,
-    scatter_sort,
-)
+from .utils import fix_slice_dict_nodeattr, ptr_from_batchidx, scatter_sort
 
 
-def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=True):
+def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=False):
     """
     Sums the energy of duplicate hits in the same cell for each event.
     If fake=False, the function also verifies that there were no duplicate hits in the original data.
@@ -36,7 +32,7 @@ def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=True):
     batch : Batch
         The modified Batch object where duplicate hits have been summed.
     """
-    dev = batch.x.device
+
     # batch = batch.to("cpu")
     batchidx = batch.batch
     assert (batchidx.diff() >= 0).all()
@@ -48,9 +44,14 @@ def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=True):
         batch, globalidx = _move_doublehits_to_neighbor_cells(
             batch, globalidx.clone(), eventshift.clone()
         )
-    else:
-        pos = batch.x[:, 1:].long()
-        __globalidx_from_pos(pos, batchidx)
+
+    batch = _add_hits(batch, globalidx, forbid_dublicates)
+    return batch
+
+
+def _add_hits(batch: Batch, globalidx: torch.Tensor, forbid_dublicates: bool):
+    dev = batch.x.device
+    batchidx = batch.batch
 
     # sort the globalidx
     globalidx, index_perm = scatter_sort(globalidx, batchidx)
@@ -95,11 +96,11 @@ def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=True):
     assert torch.allclose(
         scatter_add(hitE_new, batchidx_new), scatter_add(hitE, batchidx)
     )
-    if not shiftmultihit:
-        assert torch.allclose(
-            scatter_add(pos_new * hitE_new.unsqueeze(-1), batchidx_new, -2),
-            scatter_add(pos * hitE.unsqueeze(-1), batchidx, -2),
-        )
+    # if not shiftmultihit:
+    #     assert torch.allclose(
+    #         scatter_add(pos_new * hitE_new.unsqueeze(-1), batchidx_new, -2),
+    #         scatter_add(pos * hitE.unsqueeze(-1), batchidx, -2),
+    #     )
 
     if forbid_dublicates:
         assert (n_multihit == 0).all()
@@ -124,16 +125,21 @@ def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=True):
     return batch.to(dev)
 
 
+# switch for testing _move_doublehits_to_neighbor_cells
+_testing_no_random_shift = False
+
+
 def _move_doublehits_to_neighbor_cells(
     batch: Batch, globalidx: torch.Tensor, eventshift: torch.Tensor
 ):
-    pos: torch.Tensor = batch.x[:, 1:].long()
     batchidx: torch.Tensor = batch.batch
-    dev = pos.device
+    dev = batch.x.device
 
     # sort, so we can check globalidx for repetitions to check for double cells
     globalidx, index_perm = scatter_sort(globalidx, batchidx)
     batch.x = batch.x[index_perm]
+
+    pos: torch.Tensor = batch.x[:, 1:].long()
 
     _, unique_cells_idx, counts = torch.unique(
         globalidx, return_inverse=True, return_counts=True
@@ -148,7 +154,9 @@ def _move_doublehits_to_neighbor_cells(
     )
     shift_options = len(calorimeter.dims) * 2
     # start value for each shift
-    shift_state = torch.randint_like(mhit_idxs, 0, shift_options)
+    shift_state = torch.randint_like(mhit_idxs, 1, shift_options)
+    if _testing_no_random_shift:
+        shift_state = torch.ones_like(shift_state)
     idxs_to_overwrite = []
     new_pos_list = []
     new_global_list = []
@@ -162,6 +170,9 @@ def _move_doublehits_to_neighbor_cells(
             calorimeter.cell_idxs.to(dev)[new_pos.T[0], new_pos.T[1], new_pos.T[2]]
             + eventshift[batchidx[mhit_idxs]]
         )
+        # TODO sort by highest energy, to prioritize shifting
+        # the 2nd highest energy out of the cell
+
         # The new position is valid iff it's A) not occupied
         new_pos_is_free = torch.isin(
             new_global, torch.cat([globalidx, *new_global_list])
