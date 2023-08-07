@@ -43,6 +43,11 @@ class Calorimeter:
         self._assert_calo_init()
         return self._dims
 
+    def pos_to_cellidx(self, pos: torch.Tensor):
+        assert pos.shape[-1] == len(self.dims)
+        dev = pos.device
+        return self.cell_idxs.to(dev)[pos[..., 0], pos[..., 1], pos[..., 2]]
+
     def init_calorimeter(self, caloname: str):
         """The function `init_calorimeter` initializes a calorimeter geometry.
         Currently implemented are dataset 2 and 3 of the CaloChallenge:

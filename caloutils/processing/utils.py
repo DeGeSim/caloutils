@@ -9,7 +9,7 @@ from torch_geometric.nn import pool
 from .. import calorimeter
 
 
-def scatter_sort(x: Tensor, index: Tensor, dim=-1):
+def scatter_sort(x: Tensor, index: Tensor, dim: int = -1, descending: bool = False):
     """
     Sorts the elements of `x` that share the same `index`, returns sorted `x` and `index` needed.
 
@@ -21,6 +21,8 @@ def scatter_sort(x: Tensor, index: Tensor, dim=-1):
         The index tensor to sort according to `x`.
     dim : int, optional
         The dimension along which to sort. Defaults to the last dimension.
+    descending : bool, optional
+        Lowest value first. Defaults to true.
 
     Returns
     -------
@@ -29,9 +31,11 @@ def scatter_sort(x: Tensor, index: Tensor, dim=-1):
     index : torch.Tensor
         The index tensor sorted according to `x`.
     """
-    x, x_perm = torch.sort(x, dim=dim)
+    x, x_perm = torch.sort(x, dim=dim, descending=descending)
     index = index.take_along_dim(x_perm, dim=dim)
-    index, index_perm = torch.sort(index, dim=dim, stable=True)
+    index, index_perm = torch.sort(
+        index, dim=dim, stable=True, descending=descending
+    )
     x = x.take_along_dim(index_perm, dim=dim)
     return x, x_perm.take_along_dim(index_perm, dim=dim)
 

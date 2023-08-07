@@ -139,7 +139,8 @@ def _move_doublehits_to_neighbor_cells(
     globalidx, index_perm = scatter_sort(globalidx, batchidx)
     batch.x = batch.x[index_perm]
 
-    pos: torch.Tensor = batch.x[:, 1:].long()
+    # pos: torch.Tensor = batch.x[:, 1:].long()
+    # hitE: torch.Tensor = batch.x[:, 0].long()
 
     _, unique_cells_idx, counts = torch.unique(
         globalidx, return_inverse=True, return_counts=True
@@ -158,27 +159,29 @@ def _move_doublehits_to_neighbor_cells(
     if _testing_no_random_shift:
         shift_state = torch.ones_like(shift_state)
     idxs_to_overwrite = []
-    new_pos_list = []
+    new_x_list = []
     new_global_list = []
 
     for _ in range(shift_options):
         if len(mhit_idxs) == 0:
             break
-        new_pos = _shift_pos(pos[mhit_idxs], shift_state)
-        # get the new double index for the shifted hits
-        new_global = (
-            calorimeter.cell_idxs.to(dev)[new_pos.T[0], new_pos.T[1], new_pos.T[2]]
-            + eventshift[batchidx[mhit_idxs]]
-        )
-        # TODO sort by highest energy, to prioritize shifting
+
+        batchidx_to_shift = batchidx[mhit_idxs]
+        new_x = _shift_pos(batch.x[mhit_idxs], shift_state)
+
+        # sort by highest energy, to prioritize shifting
         # the 2nd highest energy out of the cell
+        _, perm = scatter_sort(new_x.T[0], batchidx_to_shift, descending=True)
+        new_x = new_x[perm]
+        mhit_idxs = mhit_idxs[perm]
 
-        # The new position is valid iff it's A) not occupied
-        new_pos_is_free = torch.isin(
-            new_global, torch.cat([globalidx, *new_global_list])
+        # get the new globals index for the shifted hits
+        new_global = (
+            calorimeter.pos_to_cellidx(new_x[:, 1:]) + eventshift[batchidx_to_shift]
         )
 
-        # and B) this is the first hit to be shifted to this cell
+        # Check if the shift is valid
+        # A) Check if this is the first hit to be shifted to this cell
         # we now need and index that filters mhit_idxs
         # and only lets the first though.
         # (4,3,4,1,3)   -> (1,1,0,1,0) or (0,1,3)
@@ -186,7 +189,7 @@ def _move_doublehits_to_neighbor_cells(
         # but for this we need to sort the indexes again
         new_global, perm = new_global.sort()
         mhit_idxs = mhit_idxs[perm]
-        new_pos = new_pos[perm]
+        new_x = new_x[perm]
 
         # now we can check of the unique rev index is increasing
         # which tells us of the cell is being accessed for the first time
@@ -197,13 +200,19 @@ def _move_doublehits_to_neighbor_cells(
             )
         ).bool()
 
+        # B)
+        # check if the new position is valid iff it's not already occupied
+        new_pos_is_free = ~torch.isin(
+            new_global, torch.cat([globalidx, *new_global_list])
+        )
+
         # combine the two
         valide_shift_index = new_pos_is_free & first_new_hit
 
         # apppend the shifted hits to the list
         if valide_shift_index.sum():
             idxs_to_overwrite.append(mhit_idxs[valide_shift_index])
-            new_pos_list.append(new_pos[valide_shift_index])
+            new_x_list.append(new_x[valide_shift_index])
             new_global_list.append(new_global[valide_shift_index])
         # rerun loop with the remaining multihits
         mhit_idxs = mhit_idxs[~valide_shift_index]
@@ -213,9 +222,8 @@ def _move_doublehits_to_neighbor_cells(
         # overwrite old position and global index
         stacked_idxs_to_overwrite = torch.cat(idxs_to_overwrite)
         globalidx[stacked_idxs_to_overwrite] = torch.cat(new_global_list)
-        pos[stacked_idxs_to_overwrite] = torch.cat(new_pos_list)
+        batch.x[stacked_idxs_to_overwrite] = torch.cat(new_x_list)
 
-        batch.x[:, 1:] = pos
     return batch, globalidx
 
 
@@ -236,8 +244,8 @@ def __globalidx_from_pos(pos, batchidx):
     return globalidx, eventshift
 
 
-def _shift_pos(pos, shift_state):
-    pos = pos.clone()
+def _shift_pos(x, shift_state):
+    pos = x[:, 1:].long()
     dev = pos.device
     directon = (shift_state % 2) * 2 - 1
     dim = shift_state // 2
@@ -256,4 +264,5 @@ def _shift_pos(pos, shift_state):
         torch.tensor([0, 0, 0]).to(dev),
         torch.tensor(calorimeter.dims).to(dev) - 1,
     )
-    return pos
+    x[:, 1:] = pos
+    return x
