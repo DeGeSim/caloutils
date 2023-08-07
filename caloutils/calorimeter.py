@@ -10,10 +10,10 @@ class Calorimeter:
         self._num_r: Optional[int] = None
         self._num_alpha: Optional[int] = None
         self._num_z: Optional[int] = None
-        self._layout_name: Optional[str] = None
+        self._caloname: Optional[str] = None
 
     def _assert_calo_init(self):
-        if self._layout_name is None:
+        if self._caloname is None:
             raise Exception(
                 "Calorimeter is not initalized. Use"
                 " `init_calorimeter(caloname)` before accassing the attributes."
@@ -67,6 +67,7 @@ class Calorimeter:
                     f"No such calorimeter: {caloname}. Options are"
                     " :'cc_ds2','cc_ds3'"
                 )
+        self._caloname = caloname
         self._num_z, self._num_alpha, self._num_r = layout
         self._dims = layout
 
