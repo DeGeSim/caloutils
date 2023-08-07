@@ -57,11 +57,8 @@ class Calorimeter:
         return self.cell_idxs.to(dev)[pos[..., 0], pos[..., 1], pos[..., 2]]
 
     def globalidx_from_pos(
-        self,
-        pos: torch.Tensor,
-        batchidx: torch.Tensor,
-        return_event_shift: bool = False,
-    ) -> tuple[torch.Tensor, torch.Tensor]:
+        self, pos: torch.Tensor, batchidx: torch.Tensor
+    ) -> torch.Tensor:
         """Map the position of a point to index unique for every cell and every event:
 
         Parameters

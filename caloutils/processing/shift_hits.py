@@ -6,22 +6,40 @@ from torch_geometric.data import Batch
 from .. import calorimeter
 from .utils import scatter_sort
 
-# switch for testing _shift_multihits_to_neighbor_cells
+# switch for testing shift_multi_hits
 _testing_no_random_shift = False
 
 
-def _shift_multihits_to_neighbor_cells(
+def shift_multi_hits(
     batch: Batch,
     globalidx: Optional[torch.Tensor] = None,
     return_globalidx: bool = False,
 ):
+    """
+    Shifts hits that belong to the same cell, to neighboring, empty cells, if available.
+    Leaves the highest energy hit in the cell and prioritizes moving the 2nd most energetic (then 3rd most ...) hit.
+    The function modifies the batch in place, updating batch.x, batch.batch, and batch.ptr.
+
+    Parameters
+    ----------
+    batch : Batch
+        A Batch object from the PyTorch Geometric library that contains the point cloud
+        representation of the events. Batch.x contains the hit energy and 3D coordinates of hits.
+        Batch.batch contains the indices that map which hit belongs to which shower.
+
+    forbid_dublicates : bool, optional
+        If True, asserts that there were no duplicate hits in the original data. Defaults to True.
+
+    Returns
+    -------
+    batch : Batch
+        The modified Batch object where duplicate hits have been summed.
+    """
     batchidx: torch.Tensor = batch.batch
     dev = batch.x.device
 
     if globalidx is None:
-        globalidx: torch.Tensor = calorimeter.globalidx_from_pos(
-            batch.x[:, 1:].long(), batchidx
-        )
+        globalidx = calorimeter.globalidx_from_pos(batch.x[:, 1:].long(), batchidx)
 
     # sort, so we can check globalidx for repetitions to check for double cells
     globalidx, index_perm = scatter_sort(globalidx, batchidx)
@@ -76,9 +94,7 @@ def _shift_multihits_to_neighbor_cells(
         # mhit_idxs = mhit_idxs[perm]
 
         # get the new globals index for the shifted hits
-        new_global = calorimeter.globalidx_from_pos(
-            new_x[:, 1:], batchidx_to_shift
-        )[0]
+        new_global = calorimeter.globalidx_from_pos(new_x[:, 1:], batchidx_to_shift)
 
         # Check if the shift is valid
         # A) Check if this is the first hit to be shifted to this cell
@@ -93,6 +109,7 @@ def _shift_multihits_to_neighbor_cells(
 
         # now we can check of the unique rev index is increasing
         # which tells us of the cell is being accessed for the first time
+
         first_new_hit = torch.cat(
             (
                 torch.tensor([1]).to(dev),

@@ -9,7 +9,7 @@ shift_hits._testing_no_random_shift = True
 caloutils.init_calorimeter("test")
 
 
-def test_shift_multihits_to_neighbor_cells():
+def testshift_multi_hits():
     from torch_geometric.data import Batch, Data
 
     batch = Batch.from_data_list(
@@ -28,7 +28,7 @@ def test_shift_multihits_to_neighbor_cells():
             Data(x=torch.tensor([[1, 1, 1, 0], [2, 1, 1, 0]])),
         ]
     )
-    batch_new = shift_hits._shift_multihits_to_neighbor_cells(batch.clone())
+    batch_new = shift_hits.shift_multi_hits(batch.clone())
 
     assert (
         batch_new.x

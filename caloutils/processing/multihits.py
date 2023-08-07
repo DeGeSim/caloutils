@@ -1,16 +1,20 @@
+from typing import Optional
+
 import torch
 from torch_geometric.data import Batch
 from torch_scatter import scatter_add
 
 from .. import calorimeter
-from .shift_hits import _shift_multihits_to_neighbor_cells
+from .shift_hits import shift_multi_hits
 from .utils import fix_slice_dict_nodeattr, ptr_from_batchidx, scatter_sort
 
 
-def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=False):
+def shift_sum_multi_hits(batch, forbid_dublicates=False):
     """
-    Sums the energy of duplicate hits in the same cell for each event.
-    If fake=False, the function also verifies that there were no duplicate hits in the original data.
+    Faster combination of `shift_sum_multi_hits` and `shift_sum_multi_hits`.
+    First shifts hits assigned to the same cell to empty neigboring cells, then
+    sums the energy of then hits remaining in the same cell.
+    If forbid_dublicates=False, the function also verifies that there were no duplicate hits in the original data.
     The function modifies the batch in place, updating batch.x, batch.batch, and batch.ptr.
 
     Parameters
@@ -20,7 +24,7 @@ def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=False):
         representation of the events. Batch.x contains the hit energy and 3D coordinates of hits.
         Batch.batch contains the indices that map which hit belongs to which shower.
 
-    fake : bool, optional
+    forbid_dublicates : bool, optional
         If True, asserts that there were no duplicate hits in the original data. Defaults to True.
 
     shiftmultihit : bool, optional
@@ -37,20 +41,48 @@ def sum_multi_hits(batch, forbid_dublicates=False, shiftmultihit=False):
     assert (batchidx.diff() >= 0).all()
     globalidx = calorimeter.globalidx_from_pos(batch.x[:, 1:].long(), batchidx)
 
-    if shiftmultihit:
-        # get new positions and global index
-        # and the current index of these events
-        batch, globalidx = _shift_multihits_to_neighbor_cells(
-            batch, globalidx.clone(), return_globalidx=True
-        )
+    # get new positions and global index
+    # and the current index of these events
+    batch, globalidx = shift_multi_hits(
+        batch, globalidx.clone(), return_globalidx=True
+    )
 
-    batch = _add_hits(batch, globalidx, forbid_dublicates)
+    batch = sum_multi_hits(batch, globalidx, forbid_dublicates)
     return batch
 
 
-def _add_hits(batch: Batch, globalidx: torch.Tensor, forbid_dublicates: bool):
+def sum_multi_hits(
+    batch: Batch,
+    globalidx: Optional[torch.Tensor] = None,
+    forbid_dublicates: bool = False,
+):
+    """
+    Sums the energy of duplicate hits in the same cell for each event.
+    If fake=False, the function also verifies that there were no duplicate hits in the original data.
+    The function modifies the batch in place, updating batch.x, batch.batch, and batch.ptr.
+
+    Parameters
+    ----------
+    batch : Batch
+        A Batch object from the PyTorch Geometric library that contains the point cloud
+        representation of the events. Batch.x contains the hit energy and 3D coordinates of hits.
+        Batch.batch contains the indices that map which hit belongs to which shower.
+
+    forbid_dublicates : bool, optional
+        If True, asserts that there were no duplicate hits in the original data. Defaults to True.
+
+    Returns
+    -------
+    batch : Batch
+        The modified Batch object where duplicate hits have been summed.
+    """
     dev = batch.x.device
     batchidx = batch.batch
+
+    if globalidx is None:
+        globalidx: torch.Tensor = calorimeter.globalidx_from_pos(
+            batch.x[:, 1:].long(), batchidx
+        )
 
     # sort the globalidx
     globalidx, index_perm = scatter_sort(globalidx, batchidx)
@@ -87,19 +119,14 @@ def _add_hits(batch: Batch, globalidx: torch.Tensor, forbid_dublicates: bool):
 
     x_new = torch.hstack([hitE_new.reshape(-1, 1), pos_new])
 
-    # TODO remove sanity test:
-    old_counts = torch.unique_consecutive(batchidx, return_counts=True)[1]
-    if "n_pointsv" in batch.keys:
-        assert (old_counts == batch.n_pointsv).all()
-    assert ((old_counts - new_counts) == n_multihit).all()
-    assert torch.allclose(
-        scatter_add(hitE_new, batchidx_new), scatter_add(hitE, batchidx)
-    )
-    # if not shiftmultihit:
-    #     assert torch.allclose(
-    #         scatter_add(pos_new * hitE_new.unsqueeze(-1), batchidx_new, -2),
-    #         scatter_add(pos * hitE.unsqueeze(-1), batchidx, -2),
-    #     )
+    # # TODO remove sanity test:
+    # old_counts = torch.unique_consecutive(batchidx, return_counts=True)[1]
+    # if "n_pointsv" in batch.keys:
+    #     assert (old_counts == batch.n_pointsv).all()
+    # assert ((old_counts - new_counts) == n_multihit).all()
+    # assert torch.allclose(
+    #     scatter_add(hitE_new, batchidx_new), scatter_add(hitE, batchidx)
+    # )
 
     if forbid_dublicates:
         assert (n_multihit == 0).all()
