@@ -65,8 +65,8 @@ Usage
 First, the used calorimeter geometry needs to be selected:
 .. code-block:: python
 
-   from caloutils.calorimeter import Calorimeter
-   Calorimeter.set_layout_calochallange_ds2()
+   import caloutils
+   caloutils.init_calorimeter("cc_ds2")
 
 For now only dataset 2 and 3 of the `Calochallenge<https://github.com/CaloChallenge/homepage>`  are implemented
 

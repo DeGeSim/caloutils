@@ -6,16 +6,14 @@ import torch
 
 class Calorimeter:
     def __init__(self) -> None:
-        self._ds2 = (45, 16, 9)
-        self._ds3 = (45, 50, 18)
         self._dims: Optional[tuple[int, int, int]] = None
         self._num_r: Optional[int] = None
         self._num_alpha: Optional[int] = None
         self._num_z: Optional[int] = None
-        self._caloname: Optional[str] = None
+        self._layout_name: Optional[str] = None
 
     def _assert_calo_init(self):
-        if self._caloname is None:
+        if self._layout_name is None:
             raise Exception(
                 "Calorimeter is not initalized. Use"
                 " `init_calorimeter(caloname)` before accassing the attributes."
@@ -45,15 +43,32 @@ class Calorimeter:
         self._assert_calo_init()
         return self._dims
 
-    def set_layout_calochallange_ds2(self):
-        self._num_z, self._num_alpha, self._num_r = self._ds2
-        self._dims = self._ds2
-        self._caloname = "cc_ds2"
+    def init_calorimeter(self, caloname: str):
+        """The function `init_calorimeter` initializes a calorimeter geometry.
+        Currently implemented are dataset 2 and 3 of the CaloChallenge:
+        https://github.com/CaloChallenge/homepage
 
-    def set_layout_calochallange_ds3(self):
-        self._num_z, self._num_alpha, self._num_r = self._ds3
-        self._dims = self._ds3
-        self._caloname = "cc_ds3"
+        Parameters
+        ----------
+        caloname : str
+            The parameter `caloname` is a string that represents the name of the calorimeter. It can have two
+        possible values: "cc_ds2" or "cc_ds3".
+
+        """
+        match caloname:
+            case "cc_ds2":
+                layout = (45, 16, 9)
+            case "cc_ds3":
+                layout = (45, 50, 18)
+            case "test":
+                layout = (2, 2, 1)
+            case _:
+                raise NotImplementedError(
+                    f"No such calorimeter: {caloname}. Options are"
+                    " :'cc_ds2','cc_ds3'"
+                )
+        self._num_z, self._num_alpha, self._num_r = layout
+        self._dims = layout
 
 
 calorimeter = Calorimeter()

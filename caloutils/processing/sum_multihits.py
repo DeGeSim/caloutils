@@ -159,11 +159,7 @@ def _move_doublehits_to_neighbor_cells(
         new_pos = _shift_pos(pos[mhit_idxs], shift_state)
         # get the new double index for the shifted hits
         new_global = (
-            calorimeter.cell_idxs.to(dev)[
-                new_pos.T[0],
-                new_pos.T[1],
-                new_pos.T[2],
-            ]
+            calorimeter.cell_idxs.to(dev)[new_pos.T[0], new_pos.T[1], new_pos.T[2]]
             + eventshift[batchidx[mhit_idxs]]
         )
         # The new position is valid iff it's A) not occupied
