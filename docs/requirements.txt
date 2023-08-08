@@ -1,4 +1,4 @@
-sphinx
-sphinx_rtd_theme
-autodocsumm
-readthedocs-sphinx-search
+Sphinx==6.2.1
+sphinx-rtd-theme==1.2.2
+autodocsumm==0.2.11
+readthedocs-sphinx-search==0.3.1

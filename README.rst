@@ -55,6 +55,7 @@ Installation
 ============
 
 You can easily install ``caloutils`` via pip:
+
 .. code-block:: console
 
    $ pip install caloutils
@@ -63,6 +64,7 @@ Usage
 =====
 
 First, the used calorimeter geometry needs to be selected:
+
 .. code-block:: python
 
    import caloutils

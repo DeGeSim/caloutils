@@ -9,7 +9,7 @@ test:
 	pytest
 
 docs:
-	$(MAKE) -C docs clean
+	# $(MAKE) -C docs clean
 	$(MAKE) -C docs html
 
 build: clean
