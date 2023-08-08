@@ -2,8 +2,8 @@ Sphinx==6.2.1
 sphinx-rtd-theme==1.2.2
 autodocsumm==0.2.11
 readthedocs-sphinx-search==0.3.1
-tqdm
-torch>=2.0.0
-torch_geometric>=2.3.0
-torch-scatter>=2.1.1
-scipy
+# tqdm
+# torch>=2.0.0
+# torch_geometric>=2.3.0
+# torch-scatter>=2.1.1
+# scipy

@@ -23,11 +23,12 @@ import sys
 sys.path.insert(0, os.path.abspath(".."))
 
 autodoc_mock_imports = [
-    "torch_geometric",
     "torch",
+    "torch_geometric",
     "torch_scatter",
     "tqdm",
     "numpy",
+    "scipy",
 ]
 
 
