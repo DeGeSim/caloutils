@@ -1,10 +1,6 @@
 from torch_geometric.data import Batch
 
-from ..processing import (
-    shift_multi_hits,
-    shift_sum_duplicate_hits,
-    sum_duplicate_hits,
-)
+from ..processing import shift_multi_hits, shift_sum_multi_hits, sum_multi_hits
 from ..processing.batch_to_Exyz import batch_to_Exyz
 from .analyze_layers import analyze_layers
 from .energy_ratios import cyratio, sphereratio
@@ -50,9 +46,9 @@ def calc_vars(
         The input Batch object with calculated variables added.
     """
     if sum_multihits and shift_multihits:
-        batch = shift_sum_duplicate_hits(batch)
+        batch = shift_sum_multi_hits(batch)
     elif sum_multihits:
-        batch = sum_duplicate_hits(batch)
+        batch = sum_multi_hits(batch)
     elif shift_multihits:
         batch = shift_multi_hits(batch)
 

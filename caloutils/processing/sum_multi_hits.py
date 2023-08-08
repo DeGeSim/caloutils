@@ -5,7 +5,7 @@ from torch_geometric.data import Batch
 from torch_scatter import scatter_add
 
 from .. import calorimeter
-from .shift_hits import shift_multi_hits
+from .shift_multi_hits import shift_multi_hits
 from .utils import fix_slice_dict_nodeattr, ptr_from_batchidx, scatter_sort
 
 
