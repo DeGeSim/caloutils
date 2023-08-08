@@ -6,9 +6,6 @@ from torch_geometric.data import Batch
 from .. import calorimeter
 from .utils import scatter_sort
 
-# switch for testing shift_multi_hits
-_testing_no_random_shift = False
-
 
 def shift_multi_hits(
     batch: Batch,
@@ -74,7 +71,9 @@ def shift_multi_hits(
     shift_options = len(calorimeter.dims) * 2
     # start value for each shift
     shift_state = torch.randint_like(mhit_idxs, 1, shift_options)
-    if _testing_no_random_shift:
+
+    # switch for testing this function
+    if calorimeter._caloname == "test":
         shift_state = torch.ones_like(shift_state)
     idxs_to_overwrite = []
     new_x_list = []

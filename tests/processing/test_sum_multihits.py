@@ -2,7 +2,7 @@ import torch
 from torch_scatter import scatter_add
 
 import caloutils
-from caloutils.processing import multihits
+from caloutils.processing import sum_multi_hits
 
 caloutils.init_calorimeter("test")
 
@@ -37,7 +37,7 @@ def test_sum_multi_hits():
             ),
         ]
     )
-    batch_new = multihits.sum_multi_hits(batch.clone())
+    batch_new = sum_multi_hits(batch.clone())
     assert (
         batch_new.x
         == torch.tensor(

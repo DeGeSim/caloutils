@@ -2,9 +2,7 @@ import torch
 from torch_scatter import scatter_add
 
 import caloutils
-from caloutils.processing import shift_hits
-
-shift_hits._testing_no_random_shift = True
+from caloutils.processing import shift_multi_hits
 
 caloutils.init_calorimeter("test")
 
@@ -28,7 +26,7 @@ def testshift_multi_hits():
             Data(x=torch.tensor([[1, 1, 1, 0], [2, 1, 1, 0]])),
         ]
     )
-    batch_new = shift_hits.shift_multi_hits(batch.clone())
+    batch_new = shift_multi_hits(batch.clone())
 
     assert (
         batch_new.x
