@@ -85,13 +85,6 @@ def shift_multi_hits(
 
         batchidx_to_shift = batchidx[mhit_idxs]
         new_x = _shift_pos(batch.x[mhit_idxs], shift_state)
-
-        # # sort by highest energy, to prioritize shifting
-        # # the 2nd highest energy out of the cell
-        # _, perm = scatter_sort(new_x.T[0], batchidx_to_shift, descending=True)
-        # new_x = new_x[perm]
-        # mhit_idxs = mhit_idxs[perm]
-
         # get the new globals index for the shifted hits
         new_global = calorimeter.globalidx_from_pos(new_x[:, 1:], batchidx_to_shift)
 
