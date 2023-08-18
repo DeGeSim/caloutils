@@ -87,12 +87,10 @@ def calc_hist_dist(
 
     dists = []
     for iftx in range(r.shape[-1]):
-        if bins.dim() == 1:
-            ibins = bins
-        elif bins.shape[-1] == r.shape[-1]:
-            ibins = bins[:, iftx]
-        elif bins.shape[0] == r.shape[-1]:
+        if isinstance(bins, list) and len(bins) == r.shape[1]:
             ibins = bins[iftx]
+        elif isinstance(bins, torch.Tensor):
+            ibins = bins
         else:
             raise Exception("Bins have the wrong shape/dimension.")
         idist = hist_distance(r[..., iftx], f[..., iftx], ibins, rw, fw)

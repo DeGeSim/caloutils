@@ -57,4 +57,4 @@ def calc_sw1_dist(
     for iftx in range(r.shape[-1]):
         cdfdist = scaled_w1_distance(r[..., iftx], f[..., iftx], rw, fw)
         dists.append(cdfdist)
-    return np.stack(dists, axis=0)
+    return torch.stack(dists, axis=0).cpu().numpy()
