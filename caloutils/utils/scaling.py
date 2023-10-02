@@ -13,8 +13,18 @@ def scale_b_to_a(a: torch.Tensor, b: torch.Tensor):
         torch.Tensor: Scaled version of tensor b.
     """
     assert not a.requires_grad
+    assert a.dim() == b.dim() == 1
     mean, std = a.mean(), a.std()
-    assert (std > 1e-6).all()
-    sa = (a - mean) / (std + 1e-4)
-    sb = (b - mean) / (std + 1e-4)
+    sa = a - mean
+    sb = b - mean
+
+    if torch.log10(std) < -8:
+        std = 1
+    scale_a = torch.log10(sa.abs().mean()) - torch.log10(std)
+    scale_b = torch.log10(sb.abs().mean()) - torch.log10(std)
+    if scale_a > 10 or scale_b > 10:
+        std += 1e-6
+
+    sa = sa / std
+    sb = sb / std
     return sa, sb
