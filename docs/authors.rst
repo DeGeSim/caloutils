@@ -2,17 +2,16 @@
 Credits
 =======
 
-Development Lead
-----------------
+Development
+-----------
 
-* mova <mova@users.noreply.github.com>
-* kaechb <kaechb@users.noreply.github.com>
+* Moritz Scham <moritz.scham@desy.de>
+* Benno Käch <benno.kaech@desy.de>
 
-Contributors
-------------
-
-None yet. Why not be the first?
-
+Acknowledgement
+---------------
+* Moritz Scham is funded by Helmholtz Association’s Initiative and Networking Fund through Helmholtz AI (grant number: ZT-I-PF-5-3).
+* Benno Käch is funded by Helmholtz Association’s Initiative and Networking Fund through Helmholtz AI (grant number: ZT-I-PF-5-64).
 
 Template
 --------
