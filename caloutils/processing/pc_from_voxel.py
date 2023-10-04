@@ -2,8 +2,6 @@ import torch
 from torch import Tensor
 from torch_geometric.data import Batch
 
-from .. import calorimeter
-
 
 def voxel_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
     """Converts a 3D voxel tensor representation of a particle shower into a hit cloud (pc).
@@ -37,16 +35,11 @@ def voxel_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
         If there are NaN values in the point cloud tensor x.
     """
     E, showers = Einc.clone(), voxel.clone()
-    showers = showers.reshape(
-        -1, calorimeter.num_z, calorimeter.num_alpha, calorimeter.num_r
-    )
 
     coords = torch.argwhere(
         showers > 0.0
     )  # get indices of non-zero values (shower_id, r, alpha, z)
-    vals = showers[
-        coords[:, 0], coords[:, 1], coords[:, 2], coords[:, 3]
-    ]  # get non-zero values
+    vals = showers[tuple(coords.T)]  # get non-zero values
     _, num_hits = torch.unique(
         coords[:, 0], return_counts=True
     )  # get number of non-zero values per shower

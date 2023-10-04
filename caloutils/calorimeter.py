@@ -103,6 +103,8 @@ class Calorimeter:
                 layout = (45, 50, 18)
             case "test":
                 layout = (2, 2, 1)
+            case "test_large":
+                layout = (4, 3, 4)
             case _:
                 raise NotImplementedError(
                     f"No such calorimeter: {caloname}. Options are"
