@@ -22,15 +22,29 @@ import sys
 
 sys.path.insert(0, os.path.abspath(".."))
 
-autodoc_mock_imports = [
+autodoc_mock_imports = {
     "torch",
     "torch_geometric",
     "torch_scatter",
     "tqdm",
     "numpy",
     "scipy",
-]
+}
 
+import mock
+
+MOCK_MODULES = {
+    "numpy",
+    "scipy",
+    "matplotlib",
+    "matplotlib.pyplot",
+    "scipy.interpolate",
+    "torch_geometric.data",
+    "torch_geometric.nn",
+    "torch_geometric.nn.pool",
+} | autodoc_mock_imports
+for mod_name in MOCK_MODULES:
+    sys.modules[mod_name] = mock.Mock()
 
 import caloutils
 

@@ -28,6 +28,7 @@ dev = [
   "black",
   "pre-commit",
   "ruff",
+  "mock",
 ]
 doc = ["sphinx", "sphinx_rtd_theme", "autodocsumm", "readthedocs-sphinx-search"]
 
