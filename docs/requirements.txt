@@ -2,6 +2,7 @@ Sphinx==6.2.1
 sphinx-rtd-theme==1.2.2
 autodocsumm==0.2.11
 readthedocs-sphinx-search==0.3.1
+mock
 # tqdm
 torch>=2.0.0
 # torch_geometric>=2.3.0
