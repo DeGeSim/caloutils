@@ -2,6 +2,8 @@ import torch
 from torch import Tensor
 from torch_geometric.data import Batch
 
+from ..utils.batch import add_graph_attr, add_node_attr, init_batch
+
 
 def voxel_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
     """Converts a 3D voxel tensor representation of a particle shower into a hit cloud (pc).
@@ -35,6 +37,11 @@ def voxel_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
         If there are NaN values in the point cloud tensor x.
     """
     E, showers = Einc.clone(), voxel.clone()
+    assert E.dim() == 1
+    assert E.dim() < voxel.dim()
+    assert (
+        E.shape[0] == voxel.shape[0]
+    ), "Both inputs must give the same number of events"
 
     coords = torch.argwhere(
         showers > 0.0
@@ -49,12 +56,12 @@ def voxel_to_pc(voxel: Tensor, Einc: Tensor) -> Batch:
     )  # create start_index array
     start_index[1:] = num_hits.cumsum(0)[:-1]  # calculate start_index
     x = torch.hstack((vals[:, None], coords))
-    batch_idx = torch.arange(showers.shape[0]).repeat_interleave(
-        num_hits
-    )  # create batch_idx array
-    assert (x == x).all(), "nans in input"
-    b = Batch()
-    b.batch = batch_idx
-    b.x = x
-    b.y = torch.cat([E, num_hits]).reshape(-1, 2)
-    return b
+    y = torch.stack([E, num_hits], dim=-1)
+
+    # create batch_idx array
+    batch_idx = torch.arange(showers.shape[0]).repeat_interleave(num_hits).long()
+    batch = init_batch(batch_idx)
+    add_node_attr(batch, "x", x)
+    add_graph_attr(batch, "y", y)
+
+    return batch
