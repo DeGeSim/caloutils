@@ -2,7 +2,7 @@
 
 __author__ = """mova"""
 __email__ = "moritz.scham@desy.de"
-__version__ = '0.0.16'  # fmt: skip
+__version__ = '0.0.17'  # fmt: skip
 
 from .calorimeter import calorimeter
 
