@@ -142,10 +142,6 @@ def sum_multi_hits(
     # need to shift the ptr by the number of removed hits
     batch.ptr = ptr_from_batchidx(batchidx_new)
 
-    batch.nhits = {
-        "n": batch.n_pointsv,
-        "n_by_E": batch.n_pointsv / batch.y[:, 0],
-    }
     fix_slice_dict_nodeattr(batch, "x")
 
     return batch.to(dev)
