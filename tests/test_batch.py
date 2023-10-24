@@ -130,7 +130,7 @@ def test_batch_add_graph_attr():
 
 
 def test_from_batch_list():
-    batch_size = 9
+    batch_size = 12
     node_range = (2, 5)
     nodes_v = torch.randint(*node_range, (batch_size,)).to(device)
     edges_per_graph = torch.cat(
@@ -159,7 +159,10 @@ def test_from_batch_list():
     ]
     batch_truth = Batch.from_data_list(batch_list)
     batch = from_batch_list(
-        Batch.from_data_list(batch_list[:3]), Batch.from_data_list(batch_list[3:])
+        Batch.from_data_list(batch_list[:3]),
+        Batch.from_data_list(batch_list[3:5]),
+        Batch.from_data_list(batch_list[5:7]),
+        Batch.from_data_list(batch_list[7:]),
     )
 
     compare(batch_truth, batch)

@@ -123,20 +123,30 @@ def pad_one(arr: torch.Tensor):
 
 def from_batch_list(*batches: list[Batch]):
     res = Batch.from_data_list(batches)
+    res._slice_dict["batch"] = {}
+    res._slice_dict["ptr"] = {}
+    res._inc_dict["batch"] = {}
+    res._inc_dict["ptr"] = {}
     res.ptr = ptr_from_batchidx(res.batch)
     k = "edge_attr"
-    for k in res.keys:
-        res._slice_dict[k] = torch.cat(
+    for k in set(res.keys) - {"batch", "ptr"}:
+        # slice_shift = [0] + [be._slice_dict[k][-1] for be in batches ]
+        res._slice_dict[k] = pad_zero(
+            torch.concat([be._slice_dict[k].diff() for be in batches]).cumsum(0)
+        )
+        if k != "edge_index":
+            inc_shift = pad_zero(
+                torch.tensor([sum(be._inc_dict[k]) for be in batches])
+            ).cumsum(0)
+        else:
+            inc_shift = pad_zero(
+                torch.tensor([be.num_nodes for be in batches])
+            ).cumsum(0)
+
+        res._inc_dict[k] = torch.cat(
             [
-                be._slice_dict[k]
-                + (0 if ibatch == 0 else batches[ibatch - 1]._slice_dict[k][-1])
+                be._inc_dict[k] + inc_shift[ibatch]
                 for ibatch, be in enumerate(batches)
             ]
         )
-        # res._inc_dict[k] = torch.cat(
-        #     [
-        #         be._slice_dict[k]
-        #         for ibatch, be in enumerate(batches)
-        #     ]
-        # )
     return res
