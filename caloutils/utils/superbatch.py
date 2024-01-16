@@ -10,7 +10,7 @@ from torch_geometric.data.collate import collate
 
 class SuperBatch(Batch):
     def __init__(self, batch_idx: LongTensor, **kwargs) -> None:
-        super().__init__(kwargs)
+        super().__init__(**kwargs)
 
         if not batch_idx.dtype == torch.long:
             raise Exception("Batch index dtype must be torch.long")
