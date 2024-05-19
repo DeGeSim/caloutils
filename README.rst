@@ -106,3 +106,8 @@ These examples are meant to be illustrative and provide a quick understanding of
    # Or, all at once, stored as attributes of the batch:
    batch=caloutils.variables.calc_vars(batch)
    print(batch.cyratio.mean())
+
+(Moritz Scham had been funded by Helmholtz Association’s Initiative and Networking Fund through
+Helmholtz AI (grant number: ZT-I-PF-5-3). This research was supported in part through the Maxwell
+computational resources operated at Deutsches Elektronen-Synchrotron DESY (Hamburg, Germany). The authors acknowledge support from Deutsches Elektronen-Synchrotron DESY (Hamburg,
+Germany), a member of the Helmholtz Association HGF.)
